@@ -1,5 +1,7 @@
 package com.example.security;
 
+import com.example.security.filters.JwtAuthenticationFilter;
+import com.example.security.jwt.JwtUtils;
 import com.example.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,11 +21,20 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
+
+    @Autowired
+    JwtUtils jwtUtils;
+
     @Autowired
     UserDetailsServiceImpl userDetailsService;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)throws Exception{
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager)throws Exception{
+
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtils);
+        jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
+        jwtAuthenticationFilter.setFilterProcessesUrl("/login");
+
         return httpSecurity
                 .csrf(config -> config.disable())
                 .authorizeHttpRequests(auth -> {
@@ -34,8 +45,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
-                .httpBasic()
-                .and()
+                .addFilter(jwtAuthenticationFilter)
                 .build();
     }
 
@@ -50,16 +60,23 @@ public class SecurityConfig {
         return manager;
     }*/
 
-    PasswordEncoder passwordEncoder(){
+    @Bean
+    public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
         /*return NoOpPasswordEncoder.getInstance();*/
     }
-    AuthenticationManager authenticationManager(HttpSecurity httpSecurity, PasswordEncoder passwordEncoder) throws Exception {
+
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity httpSecurity, PasswordEncoder passwordEncoder) throws Exception {
         return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder)
                 .and()
                 .build();
 
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new BCryptPasswordEncoder().encode("1234"));
     }
 }
