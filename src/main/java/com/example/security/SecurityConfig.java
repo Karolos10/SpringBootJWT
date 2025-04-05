@@ -1,6 +1,7 @@
 package com.example.security;
 
 import com.example.security.filters.JwtAuthenticationFilter;
+import com.example.security.filters.JwtAutherizationFilter;
 import com.example.security.jwt.JwtUtils;
 import com.example.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
@@ -20,6 +22,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
 
@@ -30,7 +33,7 @@ public class SecurityConfig {
     UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    JwtAuthenticationFilter autoherizationFilter;
+    JwtAutherizationFilter autoherizationFilter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager)throws Exception{
@@ -81,7 +84,7 @@ public class SecurityConfig {
 
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         System.out.println(new BCryptPasswordEncoder().encode("1234"));
-    }
+    }*/
 }
