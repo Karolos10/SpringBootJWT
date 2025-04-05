@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .build();
     }
 
-    @Bean
+    /*@Bean
     UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
         manager.createUser(User.withUsername("karolos")
@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .build());
 
         return manager;
-    }
+    }*/
 
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
