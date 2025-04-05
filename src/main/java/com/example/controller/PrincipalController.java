@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 @RestController
 public class PrincipalController {
 
-    /*@Autowired
-    private PasswordEncoder passwordEncoder;*/
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -44,8 +44,8 @@ public class PrincipalController {
 
         UserEntity userEntity = UserEntity.builder()
                 .username(createUserDTO.getUsername())
-                /*.password(passwordEncoder.encode(createUserDTO.getPassword()))*/
-                .password(createUserDTO.getPassword())
+                .password(passwordEncoder.encode(createUserDTO.getPassword()))
+                /*.password(createUserDTO.getPassword())*/
                 .email(createUserDTO.getEmail())
                 .roles(roles)
                 .build();
